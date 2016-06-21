@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 'use strict'
 
+const debug = require('debug')('index')
 const sqlite3 = require('sqlite3')
 const Twitter = require('./lib/twitter')
 const Environment = require('./lib/environment')
 const fetch_followers = require('./lib/fetch-followers')
+const fetch_users = require('./lib/fetch-users')
 
 const twitter = new Twitter(
   process.env.TWITTER_CONSUMER_KEY,
@@ -21,6 +23,11 @@ database.exec(`
     created_at INTEGER NOT NULL,
     json TEXT NOT NULL
   );
+  CREATE TABLE IF NOT EXISTS users_lookup_http_cache (
+    id INTEGER PRIMARY KEY,
+    created_at INTEGER NOT NULL,
+    json TEXT NOT NULL
+  );
 `, function(error) {
   if (error) throw error
 
@@ -31,6 +38,12 @@ database.exec(`
   fetch_followers(screen_name, environment, function(error, ids) {
     if (error) throw error
 
-    console.log(`Fetched ${ids.length} IDs`)
+    debug(`Fetched ${ids.length} IDs`)
+
+    fetch_users(ids, environment, function(error, users) {
+      if (error) throw error
+
+      debug(`Fetched ${users.length} users`)
+    })
   })
 })
