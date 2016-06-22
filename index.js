@@ -26,7 +26,7 @@ database.exec(`
   CREATE TABLE IF NOT EXISTS users_lookup_http_cache (
     id INTEGER PRIMARY KEY,
     created_at INTEGER NOT NULL,
-    json TEXT NOT NULL
+    compressed_json BLOB
   );
 `, function(error) {
   if (error) throw error

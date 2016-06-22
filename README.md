@@ -21,4 +21,13 @@ Each user object takes about 2kb. As I write this, @realDonaldTrump has 9.2M
 followers. That means storing that raw JSON will take about 17.5GB. And if we
 want to do this for multiple candidates? Ouch.
 
-So our `users_lookup_http_cache` uses gzip. That should save us several GB.
+So our `users_lookup_http_cache` uses a fancy compression pipeline:
+
+* [UTF-8](https://en.wikipedia.org/wiki/UTF-8) to turn Twitter's text into bytes
+* [VCDIFF](https://en.wikipedia.org/wiki/VCDIFF) to delta-encode those bytes
+  against a pre-made dictinoary of sample Twitter JSON responses. (Most bytes in
+  most of these JSON objects are the same, so this compresses to ~45%.)
+* [zlib](https://en.wikipedia.org/wiki/Zlib) to Huffman-encode the resulting
+  bytes. (Most VCDIFF output is text, so this compresses a further ~45%.) (Since most of that vcdiff output is still text, this saves lots of
+
+In total, these tweaks drop us to ~20% disk usage.
