@@ -35,4 +35,6 @@ So our `users_lookup_http_cache` uses a fancy compression pipeline:
 * [zlib](https://en.wikipedia.org/wiki/Zlib) to Huffman-encode the resulting
   bytes. (Most VCDIFF output is text, so this compresses a further ~45%.) (Since most of that vcdiff output is still text, this saves lots of
 
-In total, these tweaks drop us to ~20% disk usage.
+In total, these tweaks drop us to ~20% disk usage. Add some ~25% overhead for
+SQLite and the lists of IDs, and we're looking at **One 10M-follower Tweep =>
+4.6GB**
