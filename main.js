@@ -53,7 +53,7 @@ database.exec(`
       n_ids += array.length
       debug(`${screen_name} follower IDs: ${n_ids}`)
     })
-    .pipe(in_groups_of(ids_to_users.USERS_PER_REQUEST))
+    .pipe(in_groups_of(ids_to_users.USERS_PER_REQUEST, { highWaterMark: 99999999 }))
     .pipe(ids_to_users(environment))
     .on('data', (array) => {
       n_users += array.length
