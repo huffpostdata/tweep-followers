@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict'
 
-const debug = require('debug')('index')
+const debug = require('debug')('main')
 const sqlite3 = require('sqlite3')
 const Twitter = require('./lib/twitter')
 const Environment = require('./lib/environment')
@@ -51,13 +51,13 @@ database.exec(`
   stream_followers(screen_name, environment)
     .on('data', (array) => {
       n_ids += array.length
-      debug(`Fetched a total of ${n_ids} user IDs following ${screen_name}`)
+      debug(`${screen_name} follower IDs: ${n_ids}`)
     })
     .pipe(in_groups_of(ids_to_users.USERS_PER_REQUEST))
     .pipe(ids_to_users(environment))
     .on('data', (array) => {
       n_users += array.length
-      debug(`Fetched a total of ${n_users} full-user followers of ${screen_name}`)
+      debug(`${screen_name} followers: ${n_users}`)
     })
     .on('error', (error) => { throw error })
 })
