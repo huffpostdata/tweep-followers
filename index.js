@@ -5,8 +5,9 @@ const debug = require('debug')('index')
 const sqlite3 = require('sqlite3')
 const Twitter = require('./lib/twitter')
 const Environment = require('./lib/environment')
-const fetch_followers = require('./lib/fetch-followers')
-const fetch_users = require('./lib/fetch-users')
+const stream_followers = require('./lib/stream-followers')
+const in_groups_of = require('./lib/in-groups-of')
+const ids_to_users = require('./lib/ids-to-users')
 
 const twitter = new Twitter(
   process.env.TWITTER_CONSUMER_KEY,
@@ -34,16 +35,14 @@ database.exec(`
   const environment = new Environment(twitter, database)
 
   const screen_name = process.argv[2]
+  let n_users = 0
 
-  fetch_followers(screen_name, environment, function(error, ids) {
-    if (error) throw error
-
-    debug(`Fetched ${ids.length} IDs`)
-
-    fetch_users(ids, environment, function(error, users) {
-      if (error) throw error
-
-      debug(`Fetched ${users.length} users`)
+  stream_followers(screen_name, environment)
+    .pipe(in_groups_of(200))
+    .pipe(ids_to_users(environment))
+    .on('data', (array) => {
+      n_users += array.length
+      debug(`Fetched a total of ${n_users} full-user followers of ${screen_name}`)
     })
-  })
+    .on('error', (error) => { throw error })
 })
