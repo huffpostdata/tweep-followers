@@ -35,9 +35,14 @@ database.exec(`
   const environment = new Environment(twitter, database)
 
   const screen_name = process.argv[2]
+  let n_ids = 0
   let n_users = 0
 
   stream_followers(screen_name, environment)
+    .on('data', (array) => {
+      n_ids += array.length
+      debug(`Fetched a total of ${n_ids} user IDs following ${screen_name}`)
+    })
     .pipe(in_groups_of(200))
     .pipe(ids_to_users(environment))
     .on('data', (array) => {
