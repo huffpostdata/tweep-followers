@@ -1,6 +1,11 @@
 Fetches follower information from Twitter.
 
-Usage: `./gather-tweeps.sh realDonaldTrump`
+## Usage
+
+1. Install [NodeJS](https://nodejs.org)
+2. `git clone` this repository
+3. Run `npm install`
+4. Run `./gather-tweeps.sh realDonaldTrump` and follow instructions
 
 This will:
 
