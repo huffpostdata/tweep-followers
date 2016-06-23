@@ -16,8 +16,7 @@ This will:
 It will write to `database.sqlite3`, which will have:
 
 * `followers_ids_http_cache`: `id`, `screen_name`, `cursor`, `created_at`, `json`
-* `users_lookup_http_cache`: `id`, `user_id`, `created_at`, `json` (This isn't a
-  straight cache of an HTTP response, but it's far more useful for lookups.)
+* `users_lookup_http_cache`: `id`, `user_id`, `created_at`, `compressed_json`
 
 ## Disk usage
 
