@@ -53,7 +53,7 @@ database.exec(`
       n_ids += array.length
       debug(`Fetched a total of ${n_ids} user IDs following ${screen_name}`)
     })
-    .pipe(in_groups_of(200))
+    .pipe(in_groups_of(ids_to_users.USERS_PER_REQUEST))
     .pipe(ids_to_users(environment))
     .on('data', (array) => {
       n_users += array.length
