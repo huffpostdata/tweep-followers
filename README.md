@@ -1,9 +1,10 @@
 Fetches follower information from Twitter.
 
-Usage: `./index.js realDonaldTrump`
+Usage: `./gather-tweeps.sh realDonaldTrump`
 
 This will:
 
+0. Help you set up `./config` with Twitter OAuth stuff.
 1. GET from `followers/ids`, page after page, until all results are in.
 2. GET from `users/lookup` until all IDs have been looked up.
 

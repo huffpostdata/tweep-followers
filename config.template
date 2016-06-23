@@ -1,0 +1,17 @@
+# Configuration for ./index.js and ./log-in.js. This file is unique to each
+# user.
+#
+# Do not edit `env.sample`. Edit `env`.
+#
+# Lines that start with '#' are ignored.
+
+#DEBUG=*
+DEBUG=index,twitter
+
+# Twitter app secrets. Ask @adamhooper -- he created this app
+TWITTER_CONSUMER_KEY=please-edit-me
+TWITTER_CONSUMER_SECRET=please-edit-me
+
+# User secrets. These are tied to your Twitter profile.
+TWITTER_TOKEN=run-to-set-these
+TWITTER_TOKEN_SECRET=run-to-set-these

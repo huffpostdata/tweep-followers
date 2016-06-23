@@ -9,9 +9,19 @@ const stream_followers = require('./lib/stream-followers')
 const in_groups_of = require('./lib/in-groups-of')
 const ids_to_users = require('./lib/ids-to-users')
 
+if (!process.env.TWITTER_CONSUMER_KEY
+    || !process.env.TWITTER_CONSUMER_SECRET
+    || !process.env.TWITTER_TOKEN
+    || !process.env.TWITTER_TOKEN_SECRET
+    ) {
+  throw new Error('Your ./config is missing a TWITTER_ variable. Back it up, delete it and run ./gather-tweeps.sh to fix it.')
+}
+
 const twitter = new Twitter(
   process.env.TWITTER_CONSUMER_KEY,
-  process.env.TWITTER_CONSUMER_SECRET
+  process.env.TWITTER_CONSUMER_SECRET,
+  process.env.TWITTER_TOKEN,
+  process.env.TWITTER_TOKEN_SECRET
 )
 
 const database = new sqlite3.Database('database.sqlite3')
