@@ -3,8 +3,9 @@
 set -e
 
 DIR="$(dirname "$0")"
-CONFIG="$DIR"/config
+CONFIG="$DIR/config"
 CONFIG_TEMPLATE="$CONFIG.template"
+RUN="$DIR/run.sh"
 
 cd "$(dirname "$0")"
 
@@ -30,4 +31,4 @@ if $(grep -q 'run-to-set-these' "$CONFIG"); then
   mv "$tempfile" "$CONFIG"
 fi
 
-env $(cat "$CONFIG" | grep -v '^#' | xargs) "$DIR"/main.js "$@"
+"$DIR"/main.js "$@"

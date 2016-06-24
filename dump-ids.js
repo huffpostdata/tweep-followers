@@ -1,28 +1,23 @@
 #!/usr/bin/env node
 'use strict'
 
-const debug = require('debug')('main')
+/**
+ * Dump a follower's IDs to standard output.
+ *
+ * Usage: ./dump-ids.js realDonaldTrump > ids-realDonaldTrump.csv
+ */
+
 const stream_followers = require('./lib/stream-followers')
-const in_groups_of = require('./lib/in-groups-of')
-const ids_to_users = require('./lib/ids-to-users')
 
 function main(screen_name, environment, callback) {
-  let n_ids = 0
-  let n_users = 0
-
   stream_followers(screen_name, environment)
     .on('data', (array) => {
-      n_ids += array.length
-      debug(`${screen_name} follower IDs: ${n_ids}`)
-    })
-    .pipe(in_groups_of(ids_to_users.USERS_PER_REQUEST, { highWaterMark: 99999999 }))
-    .pipe(ids_to_users(environment))
-    .on('data', (array) => {
-      n_users += array.length
-      debug(`${screen_name} followers: ${n_users}`)
+      process.stdout.write(new Buffer(array.join('\n'), 'ascii'))
+      process.stdout.write('\n')
+      process.stderr.write('.')
     })
     .on('end', () => {
-      debug(`Done streaming ${n_users} users following ${screen_name}`)
+      process.stderr.write('\n')
       callback(null)
     })
     .on('error', (error) => { callback(error) })
