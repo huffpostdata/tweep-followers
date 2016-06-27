@@ -31,4 +31,4 @@ if $(grep -q 'run-to-set-these' "$CONFIG"); then
   mv "$tempfile" "$CONFIG"
 fi
 
-"$DIR"/main.js "$@"
+env $(cat "$CONFIG" | grep -v '^#' | xargs) "$DIR"/main.js "$@"

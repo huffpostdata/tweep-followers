@@ -7,6 +7,7 @@
  * Usage: ./dump-ids.js realDonaldTrump > ids-realDonaldTrump.csv
  */
 
+const Environment = require('./lib/environment')
 const stream_followers = require('./lib/stream-followers')
 
 function main(screen_name, environment, callback) {
@@ -23,7 +24,7 @@ function main(screen_name, environment, callback) {
     .on('error', (error) => { callback(error) })
 }
 
-require('./lib/environment').load((error, environment) => {
+Environment.load((error, environment) => {
   if (error) throw error
 
   const screen_name = process.argv[2]

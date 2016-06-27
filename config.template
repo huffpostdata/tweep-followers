@@ -6,7 +6,7 @@
 # Lines that start with '#' are ignored.
 
 #DEBUG=*
-DEBUG=main,twitter
+DEBUG=main,twitter,ids-to-fetched-ids
 
 # Twitter app secrets. Ask @adamhooper -- he created this app
 TWITTER_CONSUMER_KEY=please-edit-me

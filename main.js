@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 'use strict'
 
+const Environment = require('./lib/environment')
 const debug = require('debug')('main')
 const stream_followers = require('./lib/stream-followers')
 const in_groups_of = require('./lib/in-groups-of')
-const ids_to_users = require('./lib/ids-to-users')
+const ids_to_fetched_ids = require('./lib/ids-to-fetched-ids')
 
 function main(screen_name, environment, callback) {
   let n_ids = 0
@@ -15,8 +16,8 @@ function main(screen_name, environment, callback) {
       n_ids += array.length
       debug(`${screen_name} follower IDs: ${n_ids}`)
     })
-    .pipe(in_groups_of(ids_to_users.USERS_PER_REQUEST, { highWaterMark: 99999999 }))
-    .pipe(ids_to_users(environment))
+    .pipe(in_groups_of(ids_to_fetched_ids.USERS_PER_REQUEST, { highWaterMark: 99999999 }))
+    .pipe(ids_to_fetched_ids(environment))
     .on('data', (array) => {
       n_users += array.length
       debug(`${screen_name} followers: ${n_users}`)
@@ -28,7 +29,7 @@ function main(screen_name, environment, callback) {
     .on('error', (error) => { callback(error) })
 }
 
-require('./lib/environment').load((error, environment) => {
+Environment.load((error, environment) => {
   if (error) throw error
 
   const screen_name = process.argv[2]
