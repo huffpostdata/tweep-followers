@@ -29,8 +29,15 @@ function main(screen_name, environment, callback) {
     .on('error', (error) => { callback(error) })
 }
 
+function die_if_error(error) {
+  if (error) {
+    console.error(error)
+    process.exit(1)
+  }
+}
+
 Environment.load((error, environment) => {
-  if (error) throw error
+  die_if_error(error)
 
   const screen_name = process.argv[2]
   if (!screen_name) {
@@ -38,7 +45,5 @@ Environment.load((error, environment) => {
     process.exit(1)
   }
 
-  main(screen_name, environment, (error) => {
-    if (error) throw error
-  })
+  main(screen_name, environment, die_if_error)
 })
