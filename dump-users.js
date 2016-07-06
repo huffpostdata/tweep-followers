@@ -24,12 +24,10 @@ function main(screen_name, environment, callback) {
   process.stdout.write('id,screen_name,created_at,followers_count,friends_count,listed_count,description,location,time_zone,statuses_count,a_status_created_at,a_status_text,a_status_retweet_count')
 
   stream_followers(screen_name, environment)
-    .on('data', (array) => {
-      process.stderr.write('.')
-    })
     .pipe(in_groups_of(ids_to_users.USERS_PER_REQUEST))
     .pipe(ids_to_users(environment))
     .on('data', (array) => {
+      process.stderr.write('.')
       for (const user of array) {
         process.stdout.write([
           user.id_str,
