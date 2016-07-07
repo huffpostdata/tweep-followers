@@ -21,7 +21,7 @@ function main(screen_name, environment, callback) {
 
   process.stderr.write(`Dumping users following ${screen_name}: `)
 
-  process.stdout.write('id,screen_name,created_at,followers_count,friends_count,listed_count,description,location,time_zone,statuses_count,a_status_created_at,a_status_text,a_status_retweet_count')
+  process.stdout.write('id,screen_name,created_at,followers_count,friends_count,listed_count,description,location,time_zone,statuses_count,a_status_created_at,a_status_text,a_status_retweet_count\n')
 
   stream_followers(screen_name, environment)
     .pipe(in_groups_of(ids_to_users.USERS_PER_REQUEST))
