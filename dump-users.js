@@ -9,7 +9,7 @@ const ids_to_users = require('./lib/ids-to-users')
 const CsvNeedsEscaping = /[\x00-\x1f",]/
 function csv_quote(s) {
   if (CsvNeedsEscaping.test(s)) {
-    return `"${s.replace('"', '""')}"`
+    return `"${s.replace(/"/g, '""')}"`
   } else {
     return s
   }
