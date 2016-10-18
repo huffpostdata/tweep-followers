@@ -24,9 +24,9 @@ It will write to `database.sqlite3`, which will have:
 
 This is going to get large.
 
-Each user object takes about 2kb. As I write this, @realDonaldTrump has 9.2M
-followers. That means storing that raw JSON will take about 17.5GB. And if we
-want to do this for multiple candidates? Ouch.
+Each user object takes about 2kb. As I write this (Oct. 2016), @realDonaldTrump
+has 12.3M followers. That means storing that raw JSON will take about 24.6GB.
+Ouch.
 
 So our `users_lookup_http_cache` uses a fancy compression pipeline:
 
@@ -35,7 +35,7 @@ So our `users_lookup_http_cache` uses a fancy compression pipeline:
   against a pre-made dictinoary of sample Twitter JSON responses. (Most bytes in
   most of these JSON objects are the same, so this compresses to ~45%.)
 * [zlib](https://en.wikipedia.org/wiki/Zlib) to Huffman-encode the resulting
-  bytes. (Most VCDIFF output is text, so this compresses a further ~45%.) (Since most of that vcdiff output is still text, this saves lots of
+  bytes. (Most VCDIFF output is text, so this compresses a further ~45%.)
 
 In total, these tweaks drop us to ~20% disk usage. Add some ~25% overhead for
 SQLite and the lists of IDs, and we're looking at **One 10M-follower Tweep =>
@@ -43,13 +43,14 @@ SQLite and the lists of IDs, and we're looking at **One 10M-follower Tweep =>
 
 # Step 2: Pull from SQLite3 to CSV
 
-Okay, using a database was a good idea -- it helped us avoid file corruption.
-But in retrospect, Node and SQLite3 might have been bad choices: Node balks at
-sets with >1M items, and SQLite3 is far slower than it should be for some
-server operations. (In a database with 10M users on a t2.large, SQLite3 was
-almost more of a bottleneck than the actual Twitter API limits.)
+Okay, using a database was _maybe_ a good idea (it's enormous overhead, but it
+helps avoid file corruption.) But in retrospect, Node and SQLite3 were bad
+choices: Node balks at sets with >1M items, and SQLite3 is far slower than it
+should be. (In a database with 10M users on a t2.large, SQLite3 was almost more
+of a bottleneck than the actual Twitter API limits.)
 
-Also, VCDiff has its place, and now's the time to eliminate it.
+Also, VCDiff has its place, but we should eliminate it early so everything
+later in the pipeline doesn't need to decipher it.
 
 ## Dump followers' Twitter bios
 
@@ -85,3 +86,8 @@ The `description` is raw, straight from Twitter. Twitter's guarantees:
 * The CSV does not conform to the RFC exactly: it may include ASCII control
   characters! To conform to spec, you can byte-wise replace all instances of
   `\x00-\x09`, `\x0b`, `\x0c` and `\x0e-\x1f` in the CSV with `\x20` (`" "`)).
+
+## Process the TSV
+
+See [Twittok](https://github.com/huffpostdata/twittok) for a fast data processor
+that accepts this CSV as input.
